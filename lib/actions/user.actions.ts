@@ -91,15 +91,23 @@ export async function fetchUserPosts(userId: string) {
   }
 }
 
-export async function fetchUsers(userId: string) {
+export async function fetchUsers({
+  userId,
+  searchString = "",
+  pageNumber = 1,
+  pageSize = 20,
+  sortBy = "desc",
+}: {
+  userId: string;
+  searchString?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
   try {
     connectToDB();
 
-    return await User.findOne({
-      id: userId,
-    });
-
-    /*  // Calculate the number of users to skip based on the page number and page size.
+    // Calculate the number of users to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
 
     // Create a case-insensitive regular expression for the provided search string.
@@ -134,7 +142,7 @@ export async function fetchUsers(userId: string) {
     // Check if there are more users beyond the current page.
     const isNext = totalUsersCount > skipAmount + users.length;
 
-    return { users, isNext }; */
+    return { users, isNext };
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
